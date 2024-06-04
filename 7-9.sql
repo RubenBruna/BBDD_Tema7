@@ -1,0 +1,70 @@
+SET SERVEROUTPUT ON
+
+-- Ejecutar primero 7.8
+DECLARE
+    -- Policías
+    POL1 OBJ_POLICIA;
+    POL2 OBJ_POLICIA;
+    POL3 OBJ_POLICIA;
+    -- Inspectores
+    INS1 OBJ_INSPECTOR;
+    INS2 OBJ_INSPECTOR;
+    INS3 OBJ_INSPECTOR;
+    
+    SALARIO NUMBER;
+BEGIN
+    -- Policías
+    POL1 := NEW OBJ_POLICIA('48393489A','Pedro','López','García',623983295,'LOCAL',1500);
+    POL2 := NEW OBJ_POLICIA('89410275B','Luis','Hernández','Díez',628526253,'NACIONAL',1700);
+    POL3 := NEW OBJ_POLICIA('23582649C','Jorge','Dominguez','Medina',695938362,'OPERACIONES ESPECIALES',1900);
+    -- Inspectores
+    INS1 := NEW OBJ_INSPECTOR('82939852D','Narciso','Sevilla','García',683823821,'TRÁFICO');
+    INS2 := NEW OBJ_INSPECTOR('25374589E','Bernat','Medina','Palau',689548923,'MÉDICO');
+    INS3 := NEW OBJ_INSPECTOR('34675232F','Alejandra','Atienza','Nicolás',635638349,'FORENSE');
+
+    DBMS_OUTPUT.PUT_LINE('Policía 1: ' || POL1.TELEFONO);
+    DBMS_OUTPUT.PUT_LINE('Policía 2: ' || POL2.NOMBRE);
+    DBMS_OUTPUT.PUT_LINE('Policía 3: ' || 'DNI: ' || POL3.DNI || ', nombre: ' || POL3.NOMBRE);
+    DBMS_OUTPUT.PUT_LINE('Inspector 1: ' || INS1.NOMBRE);
+    DBMS_OUTPUT.PUT_LINE('Inspector 2: ' || INS2.NOMBRE);
+    DBMS_OUTPUT.PUT_LINE('Inspector 3: ' || INS3.NOMBRE);
+    
+    -- Calcular salario del policía 1
+    SALARIO := POL1.SALARIO_BASE;
+    SALARIO := POL1.CALCULAR_SALARIO(SALARIO);
+    DBMS_OUTPUT.PUT_LINE('Salario del policía 1: ' || SALARIO);
+    
+    -- Calcular salario del policía 2
+    SALARIO := POL2.SALARIO_BASE;
+    SALARIO := POL2.CALCULAR_SALARIO(SALARIO);
+    DBMS_OUTPUT.PUT_LINE('Salario del policía 2: ' || SALARIO);
+    
+    -- Calcular salario del policía 3
+    SALARIO := POL3.SALARIO_BASE;
+    SALARIO := POL3.CALCULAR_SALARIO(SALARIO);
+    DBMS_OUTPUT.PUT_LINE('Salario del policía 3: ' || SALARIO);
+    
+    -- Insertar valores en las tablas correspondientes
+    INSERT INTO POLICIAS VALUES(POL1);
+    INSERT INTO POLICIAS VALUES(POL2);
+    INSERT INTO POLICIAS VALUES(POL3);
+    INSERT INTO INSPECTORES VALUES(INS1);
+    INSERT INTO INSPECTORES VALUES(INS2);
+    INSERT INTO INSPECTORES VALUES(INS3);
+    
+    -- Actualizar campos de salarios
+    UPDATE POLICIAS SET SALARIO_BASE = POL1.CALCULAR_SALARIO(POL1.SALARIO_BASE) WHERE DNI = POL1.DNI;
+    UPDATE POLICIAS SET SALARIO_BASE = POL2.CALCULAR_SALARIO(POL2.SALARIO_BASE) WHERE DNI = POL2.DNI;
+    UPDATE POLICIAS SET SALARIO_BASE = POL3.CALCULAR_SALARIO(POL3.SALARIO_BASE) WHERE DNI = POL3.DNI;
+    
+    -- Confirmar cambios
+    COMMIT;
+END;
+/
+
+-- Ver datos de las tablas
+SELECT *
+FROM POLICIAS;
+
+SELECT *
+FROM INSPECTORES;
